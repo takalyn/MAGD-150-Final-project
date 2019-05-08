@@ -1,5 +1,9 @@
 Menu main;
-boolean gameRunning;
+Basketball ball;
+Button newGame;
+Hoop hoop;
+int count;
+boolean toggle;
 void setup(){
   size(1280,720);
   frameRate(60);
@@ -7,13 +11,18 @@ void setup(){
   textAlign(CENTER,CENTER);
   imageMode(CENTER);
   main = new Menu();
-  gameRunning = false;
+  newGame = new Button(640, 405, 426, 90, "New Game");
+  toggle = false;
+  ball = new Basketball();
 }
-void draw(){ 
-  gameRunning = main.display(gameRunning);
-  if(gameRunning){
-    println("Game Running");
+void draw(){
+  if(!toggle){
+    main.display();
+    toggle = newGame.input();
   }else{
-    println("Game Not Running"); 
+    background(0,255,255);//game goes here
+    ball.display();
+    if(count%60 == 0){println("game "+count/60);}
+    count++;
   }
 }

@@ -25,39 +25,37 @@ public class Button{
     text(message, x, y);
     popStyle();
   }
-  void input(boolean gameRunning){
-    if(mousePressed){
-      if(mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
+  boolean input(){
+    if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
         if(message=="Quit"){
           exit();
+          return false;
         }else if(message=="New Game"){
-          gameRunning=true;
-        }
-      }
-    }
+          return true;
+        }else{return false;}
+    }else{return false;}
   }
 };
 public class Menu{
   PFont title;
-  Button newGame, quit;
+  Button quit;
   PImage wallpaper;
+  boolean toggle;
   Menu(){
-    newGame = new Button(640, 405, 426, 90, "New Game");
     quit = new Button(640, 585, 426, 90, "Quit");
     title = createFont("stencil.ttf",72);
-    wallpaper = loadImage("mainmenu1.jpg");
+    wallpaper = loadImage("mainmenu.jpg");
+    toggle = false;
   }
-  void display(boolean gameRunning){
+  void display(){
     image(wallpaper, 640, 360, 1280, 720);
     newGame.display();
     quit.display();
+    quit.input();
     pushStyle();
     fill(192);
     textFont(title);
-    text("Tilt-a-Hoop", 640, 108);
+    text("Tilt-a-Rim", 640, 108);
     popStyle();
-    if(newGame.input(gameRunning) || quit.input(gameRunning)){
-      gameRunning = true;
-    }
   }
 };
