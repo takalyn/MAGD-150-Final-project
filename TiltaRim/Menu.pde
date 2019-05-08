@@ -25,15 +25,15 @@ public class Button{
     text(message, x, y);
     popStyle();
   }
-  void input(){
+  void input(boolean gameRunning){
     if(mousePressed){
       if(mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
         if(message=="Quit"){
           exit();
         }else if(message=="New Game"){
-        
+          gameRunning=true;
         }
-      }  
+      }
     }
   }
 };
@@ -47,7 +47,7 @@ public class Menu{
     title = createFont("stencil.ttf",72);
     wallpaper = loadImage("mainmenu1.jpg");
   }
-  void display(){
+  void display(boolean gameRunning){
     image(wallpaper, 640, 360, 1280, 720);
     newGame.display();
     quit.display();
@@ -56,7 +56,8 @@ public class Menu{
     textFont(title);
     text("Tilt-a-Hoop", 640, 108);
     popStyle();
-    newGame.input();
-    quit.input();
+    if(newGame.input(gameRunning) || quit.input(gameRunning)){
+      gameRunning = true;
+    }
   }
 };

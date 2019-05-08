@@ -1,4 +1,5 @@
 Menu main;
+boolean gameRunning;
 void setup(){
   size(1280,720);
   frameRate(60);
@@ -6,8 +7,13 @@ void setup(){
   textAlign(CENTER,CENTER);
   imageMode(CENTER);
   main = new Menu();
+  gameRunning = false;
 }
 void draw(){ 
-  main.display();
-  
+  gameRunning = main.display(gameRunning);
+  if(gameRunning){
+    println("Game Running");
+  }else{
+    println("Game Not Running"); 
+  }
 }
