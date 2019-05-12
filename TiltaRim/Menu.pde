@@ -40,12 +40,10 @@ public class Menu{
   PFont title;
   Button quit;
   PImage wallpaper;
-  boolean toggle;
   Menu(){
     quit = new Button(640, 585, 426, 90, "Quit");
     title = createFont("stencil.ttf",72);
     wallpaper = loadImage("mainmenu.jpg");
-    toggle = false;
   }
   void display(){
     image(wallpaper, 640, 360, 1280, 720);
@@ -57,5 +55,44 @@ public class Menu{
     textFont(title);
     text("Tilt-a-Rim", 640, 108);
     popStyle();
+  }
+};
+public class EndGame{
+  Button mainMenu;
+  PFont title, scoref;
+  PrintWriter output;
+  BufferedReader input;
+  String highScore;
+  String[] lines;
+  EndGame(){
+    mainMenu = new Button(640, 585, 426, 90, "Main Menu");
+    title = createFont("stencil.ttf",72);
+    scoref = createFont("ocra.ttf", 56);
+    lines = loadStrings("data/topScores.txt");
+  }
+  void display(int score){
+    pushStyle();
+      fill(255,128);
+      rect(640,360,1280,720);
+      popStyle();
+    fill(192,32,32);
+    textFont(title);
+    text("GAME OVER", 640, 108);
+    fill(0);
+    textFont(scoref);
+    text("Score: " + score, 640, 256);
+    if(score <= Integer.parseInt(lines[0])){
+      textFont(scoref);
+      text("High Score: " + score, 640, 320);
+    }else{
+      textFont(scoref);
+      text("New High Score!", 640, 320);
+    }
+    
+    lines[0] = Integer.toString(score);//THESE TWO LINES WHEN RETURNING TO MAIN MENU
+    saveStrings("data/topScores.txt",lines);
+      
+    mainMenu.display();
+    mainMenu.input();
   }
 };
