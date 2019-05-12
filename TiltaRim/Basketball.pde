@@ -15,11 +15,11 @@ public class Basketball{
     pushStyle();
     tint(255,128);
     image(basketball, sx, sy);
-    stroke(128.0);
+    stroke(#808080);
     strokeWeight(10);
     line(sx, sy, smx, smy);
-    image(basketball, x, y);
     popStyle();
+    image(basketball, x, y);
     if(shot)
       yv+=(a/60)/7;
   }

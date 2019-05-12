@@ -29,14 +29,19 @@ void draw(){
     if(mousePressed && !shot){
       ball.drawLine();
     }
+    if(ball.y > 720){
+      shot=false;
+      ball.unShoot();
+    }
   }
 }
 void mouseReleased(){
   if(mouseButton == RIGHT){
-    if(!shot)
+    if(!shot){
       ball.shadow();
+      ball.shoot();
+    }
     shot = true;
-    ball.shoot();
   }
   if(mouseButton == LEFT){
     shot = false;
