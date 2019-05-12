@@ -2,8 +2,7 @@ Menu main;
 Basketball ball;
 Button newGame;
 Hoop hoop;
-int count;
-boolean toggle;
+boolean toggle, shot;
 void setup(){
   size(1280,720);
   frameRate(60);
@@ -12,17 +11,35 @@ void setup(){
   imageMode(CENTER);
   main = new Menu();
   newGame = new Button(640, 405, 426, 90, "New Game");
-  toggle = false;
+  toggle = shot = false;
   ball = new Basketball();
+  hoop = new Hoop();
 }
 void draw(){
   if(!toggle){
     main.display();
     toggle = newGame.input();
   }else{
-    background(0,255,255);//game goes here
-    ball.display();
-    if(count%60 == 0){println("game "+count/60);}
-    count++;
+    background(0,255,255);
+    if(!mousePressed && !shot){
+      ball.onMouse();
+    }
+    hoop.display();
+    ball.display(shot);
+    if(mousePressed && !shot){
+      ball.drawLine();
+    }
+  }
+}
+void mouseReleased(){
+  if(mouseButton == RIGHT){
+    if(!shot)
+      ball.shadow();
+    shot = true;
+    ball.shoot();
+  }
+  if(mouseButton == LEFT){
+    shot = false;
+    ball.unShoot();
   }
 }
