@@ -27,6 +27,7 @@ public class Button{
   }
   boolean input(){
     if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
+        click.rate(2);
         click.play();
         if(message=="Quit" && !endGame){
           exit();

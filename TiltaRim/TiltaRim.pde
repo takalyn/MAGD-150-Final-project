@@ -8,6 +8,7 @@ Hoop hoop;
 boolean gameRunning, endGame, shot;
 int score,time;
 PFont fontScore;
+PImage background;
 void setup(){
   size(1280,720);
   frameRate(60);
@@ -17,6 +18,7 @@ void setup(){
   click = new SoundFile(this, "click.wav");
   swoosh = new SoundFile(this, "swoosh.wav");
   tada = new SoundFile(this, "tada.wav");
+  background = loadImage("brickwall.jpg");
   main = new Menu();
   newGame = new Button(640, 405, 426, 90, "New Game");
   gameRunning = shot = false;
@@ -33,7 +35,7 @@ void draw(){
       gameRunning = newGame.input();
       endGame = false;
   }else if(gameRunning){
-      background(0,255,255);
+      image(background, 640, 360);
       pushStyle();
         textAlign(LEFT, TOP);
         fill(255);

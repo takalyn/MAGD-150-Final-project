@@ -14,7 +14,7 @@ public class Basketball{
     x+=xv;
     y+=yv;
     pushStyle();
-      tint(255,128);
+      tint(255,192);
       image(basketball, sx, sy);
       stroke(#808080);
       strokeWeight(10);
