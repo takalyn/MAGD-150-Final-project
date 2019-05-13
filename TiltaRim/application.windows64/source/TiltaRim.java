@@ -3,6 +3,8 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import processing.sound.*; 
+
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.File; 
@@ -14,6 +16,8 @@ import java.io.IOException;
 
 public class TiltaRim extends PApplet {
 
+
+SoundFile button, buzzer, cheering, click, swoosh, tada;
 Menu main;
 EndGame end;
 Basketball ball;
@@ -22,12 +26,17 @@ Hoop hoop;
 boolean gameRunning, endGame, shot;
 int score,time;
 PFont fontScore;
+PImage background;
 public void setup(){
   
   frameRate(60);
-  rectMode(CENTER);
-  textAlign(CENTER,CENTER);
-  imageMode(CENTER);
+  rectMode(CENTER);textAlign(CENTER,CENTER);imageMode(CENTER); //alignment
+  buzzer = new SoundFile(this, "buzzer.wav");
+  cheering = new SoundFile(this, "cheering.wav");
+  click = new SoundFile(this, "click.wav");
+  swoosh = new SoundFile(this, "swoosh.wav");
+  tada = new SoundFile(this, "tada.wav");
+  background = loadImage("brickwall.jpg");
   main = new Menu();
   newGame = new Button(640, 405, 426, 90, "New Game");
   gameRunning = shot = false;
@@ -44,7 +53,7 @@ public void draw(){
       gameRunning = newGame.input();
       endGame = false;
   }else if(gameRunning){
-      background(0,255,255);
+      image(background, 640, 360);
       pushStyle();
         textAlign(LEFT, TOP);
         fill(255);
@@ -66,31 +75,28 @@ public void draw(){
       if(mousePressed && !shot && !endGame){
         ball.drawLine();
       }
-      if(ball.y > 720){
-        ball.unShoot();
-      }
-      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0){
+      if(ball.x > 1200 && ball.x < 1280 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .1f){
+        tada.play();
         score++;
         hoop.newPos();
         ball.unShoot();
-      }else if(ball.x>1280){
+      }else if(ball.x>1280 || ball.y > 720){
+        swoosh.play();
         ball.unShoot();
       }
       if(frameCount%60==0 && !endGame)
         time-=1;
-      if(time<1){
+      if(time<1)
         endGame=true;
-      }
-    if(endGame){
-      end.display(score);
+      if(endGame){
+        end.display(score);
     }
   }
 }
 public void mousePressed(){
   if(shot && !endGame){
-      ball.x = mouseX;
-      ball.y = mouseY;
       ball.unShoot();
+      ball.onMouse();
       shot = false;
     }
 }
@@ -99,9 +105,8 @@ public void mouseReleased(){
    if(!shot && time<30){
      ball.shadow();
      ball.shoot();
-   }else if(shot){
+   }else if(shot)
      ball.unShoot();
-   }
   }
 }
 public class Basketball{
@@ -120,7 +125,7 @@ public class Basketball{
     x+=xv;
     y+=yv;
     pushStyle();
-      tint(255,128);
+      tint(255,192);
       image(basketball, sx, sy);
       stroke(0xff808080);
       strokeWeight(10);
@@ -141,6 +146,8 @@ public class Basketball{
   }
   public void unShoot(){
     xv=yv=0;
+    x=mouseX;
+    y=mouseY;
     shot = false;
   }
   public void drawLine(){
@@ -201,13 +208,18 @@ public class Button{
   }
   public boolean input(){
     if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
+        click.rate(2);
+        click.play();
         if(message=="Quit" && !endGame){
           exit();
           return false;
         }else if(message=="New Game"){
+          time = 30;
+          score = 0;
           endGame = false;
           return true;
         }else if(message=="Main Menu"){
+          delay(300);
           return true;
         }else{return false;}
     }else{return false;}
@@ -241,11 +253,13 @@ public class EndGame{
   BufferedReader input;
   String highScore;
   String[] lines;
+  int sound;
   EndGame(){
     mainMenu = new Button(640, 585, 426, 90, "Main Menu");
     title = createFont("stencil.ttf",72);
     scoref = createFont("ocra.ttf", 56);
     lines = loadStrings("data/topScores.txt");
+    sound = 1;
   }
   public void display(int score){
     pushStyle();
@@ -259,14 +273,23 @@ public class EndGame{
     textFont(scoref);
     text("Score: " + score, 640, 256);
     if(score <= Integer.parseInt(lines[0])){
+      if(sound==1){
+        buzzer.play();
+        sound--;
+      }
       textFont(scoref);
       text("High Score: " + Integer.parseInt(lines[0]), 640, 320);
     }else{
+      if(sound==1){
+        cheering.play();
+        sound--;
+      }
       textFont(scoref);
       text("New High Score!", 640, 320);
     }
     mainMenu.display();
     if(mainMenu.input()){
+      sound++;
       gameRunning = false;
       lines[0] = Integer.toString(score);
       saveStrings("data/topScores.txt",lines);

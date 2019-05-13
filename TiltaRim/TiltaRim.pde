@@ -57,7 +57,7 @@ void draw(){
       if(mousePressed && !shot && !endGame){
         ball.drawLine();
       }
-      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .1){
+      if(ball.x > 1200 && ball.x < 1280 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .1){
         tada.play();
         score++;
         hoop.newPos();
