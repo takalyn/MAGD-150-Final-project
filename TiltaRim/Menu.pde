@@ -31,6 +31,8 @@ public class Button{
           exit();
           return false;
         }else if(message=="New Game"){
+          time = 30;
+          score = 0;
           endGame = false;
           return true;
         }else if(message=="Main Menu"){

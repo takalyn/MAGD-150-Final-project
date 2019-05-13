@@ -50,16 +50,12 @@ void draw(){
       if(mousePressed && !shot && !endGame){
         ball.drawLine();
       }
-      if(ball.y > 720){
-        ball.unShoot();
-      }
-      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0){
+      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .3){
         score++;
         hoop.newPos();
         ball.unShoot();
-      }else if(ball.x>1280){
+      }else if(ball.x>1280 || ball.y > 720)
         ball.unShoot();
-      }
       if(frameCount%60==0 && !endGame)
         time-=1;
       if(time<1){
@@ -72,9 +68,8 @@ void draw(){
 }
 void mousePressed(){
   if(shot && !endGame){
-      ball.x = mouseX;
-      ball.y = mouseY;
       ball.unShoot();
+      ball.onMouse();
       shot = false;
     }
 }

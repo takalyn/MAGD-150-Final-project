@@ -35,6 +35,8 @@ public class Basketball{
   }
   void unShoot(){
     xv=yv=0;
+    x=mouseX;
+    y=mouseY;
     shot = false;
   }
   void drawLine(){
