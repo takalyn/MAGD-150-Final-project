@@ -1,3 +1,5 @@
+import processing.sound.*;
+SoundFile button, buzzer, cheering, click, swoosh, tada;
 Menu main;
 EndGame end;
 Basketball ball;
@@ -9,9 +11,12 @@ PFont fontScore;
 void setup(){
   size(1280,720);
   frameRate(60);
-  rectMode(CENTER);
-  textAlign(CENTER,CENTER);
-  imageMode(CENTER);
+  rectMode(CENTER);textAlign(CENTER,CENTER);imageMode(CENTER); //alignment
+  buzzer = new SoundFile(this, "buzzer.wav");
+  cheering = new SoundFile(this, "cheering.wav");
+  click = new SoundFile(this, "click.wav");
+  swoosh = new SoundFile(this, "swoosh.wav");
+  tada = new SoundFile(this, "tada.wav");
   main = new Menu();
   newGame = new Button(640, 405, 426, 90, "New Game");
   gameRunning = shot = false;
@@ -50,19 +55,21 @@ void draw(){
       if(mousePressed && !shot && !endGame){
         ball.drawLine();
       }
-      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .3){
+      if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0 && ball.yv/ball.xv > .1){
+        tada.play();
         score++;
         hoop.newPos();
         ball.unShoot();
-      }else if(ball.x>1280 || ball.y > 720)
+      }else if(ball.x>1280 || ball.y > 720){
+        swoosh.play();
         ball.unShoot();
+      }
       if(frameCount%60==0 && !endGame)
         time-=1;
-      if(time<1){
+      if(time<1)
         endGame=true;
-      }
-    if(endGame){
-      end.display(score);
+      if(endGame){
+        end.display(score);
     }
   }
 }
@@ -78,8 +85,7 @@ void mouseReleased(){
    if(!shot && time<30){
      ball.shadow();
      ball.shoot();
-   }else if(shot){
+   }else if(shot)
      ball.unShoot();
-   }
   }
 }

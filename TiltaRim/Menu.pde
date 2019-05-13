@@ -27,6 +27,7 @@ public class Button{
   }
   boolean input(){
     if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
+        click.play();
         if(message=="Quit" && !endGame){
           exit();
           return false;
@@ -36,6 +37,7 @@ public class Button{
           endGame = false;
           return true;
         }else if(message=="Main Menu"){
+          delay(300);
           return true;
         }else{return false;}
     }else{return false;}
@@ -69,11 +71,13 @@ public class EndGame{
   BufferedReader input;
   String highScore;
   String[] lines;
+  int sound;
   EndGame(){
     mainMenu = new Button(640, 585, 426, 90, "Main Menu");
     title = createFont("stencil.ttf",72);
     scoref = createFont("ocra.ttf", 56);
     lines = loadStrings("data/topScores.txt");
+    sound = 1;
   }
   void display(int score){
     pushStyle();
@@ -87,14 +91,23 @@ public class EndGame{
     textFont(scoref);
     text("Score: " + score, 640, 256);
     if(score <= Integer.parseInt(lines[0])){
+      if(sound==1){
+        buzzer.play();
+        sound--;
+      }
       textFont(scoref);
       text("High Score: " + Integer.parseInt(lines[0]), 640, 320);
     }else{
+      if(sound==1){
+        cheering.play();
+        sound--;
+      }
       textFont(scoref);
       text("New High Score!", 640, 320);
     }
     mainMenu.display();
     if(mainMenu.input()){
+      sound++;
       gameRunning = false;
       lines[0] = Integer.toString(score);
       saveStrings("data/topScores.txt",lines);
