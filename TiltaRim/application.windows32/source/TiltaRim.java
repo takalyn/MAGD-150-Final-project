@@ -42,6 +42,7 @@ public void draw(){
   if(!gameRunning){
       main.display();
       gameRunning = newGame.input();
+      endGame = false;
   }else if(gameRunning){
       background(0,255,255);
       pushStyle();
@@ -54,6 +55,8 @@ public void draw(){
         textAlign(RIGHT, TOP);
         fill(255);
         textFont(fontScore);
+        if(time<10)
+          fill(255,0,0);
         text("Time: " + time, 1280,0);
         popStyle();
       if(!mousePressed && !shot && !endGame)
@@ -64,16 +67,13 @@ public void draw(){
         ball.drawLine();
       }
       if(ball.y > 720){
-        shot=false;
         ball.unShoot();
       }
       if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0){
         score++;
         hoop.newPos();
-        shot=false;
         ball.unShoot();
       }else if(ball.x>1280){
-        shot=false;
         ball.unShoot();
       }
       if(frameCount%60==0 && !endGame)
@@ -90,18 +90,16 @@ public void mousePressed(){
   if(shot && !endGame){
       ball.x = mouseX;
       ball.y = mouseY;
-      shot = false;
       ball.unShoot();
+      shot = false;
     }
 }
 public void mouseReleased(){
   if(!endGame){
-   if(!shot){
+   if(!shot && time<30){
      ball.shadow();
      ball.shoot();
-     shot = true;
    }else if(shot){
-     shot = false;
      ball.unShoot();
    }
   }
@@ -116,6 +114,7 @@ public class Basketball{
     x=36;
     y=360;
     xv = yv = 0;
+    sx= sy = -100;
   }
   public void display(boolean shot){
     x+=xv;
@@ -136,11 +135,13 @@ public class Basketball{
     y = max(mouseY,360); 
   }
   public void shoot(){
+    shot = true;
      yv=(int)((y-mouseY)/5);
      xv=(int)((x-mouseX)/5);
   }
   public void unShoot(){
-    xv=yv=0; 
+    xv=yv=0;
+    shot = false;
   }
   public void drawLine(){
     pushStyle();
@@ -200,10 +201,13 @@ public class Button{
   }
   public boolean input(){
     if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
-        if(message=="Quit"){
+        if(message=="Quit" && !endGame){
           exit();
           return false;
         }else if(message=="New Game"){
+          endGame = false;
+          return true;
+        }else if(message=="Main Menu"){
           return true;
         }else{return false;}
     }else{return false;}
@@ -256,17 +260,20 @@ public class EndGame{
     text("Score: " + score, 640, 256);
     if(score <= Integer.parseInt(lines[0])){
       textFont(scoref);
-      text("High Score: " + score, 640, 320);
+      text("High Score: " + Integer.parseInt(lines[0]), 640, 320);
     }else{
       textFont(scoref);
       text("New High Score!", 640, 320);
     }
-    
-    lines[0] = Integer.toString(score);//THESE TWO LINES WHEN RETURNING TO MAIN MENU
-    saveStrings("data/topScores.txt",lines);
-      
     mainMenu.display();
-    mainMenu.input();
+    if(mainMenu.input()){
+      gameRunning = false;
+      lines[0] = Integer.toString(score);
+      saveStrings("data/topScores.txt",lines);
+      time = 30;
+      score = 0;
+      ball.sx = ball.sy = ball.smx = ball.smy = -100;
+    }
   }
 };
   public void settings() {  size(1280,720); }

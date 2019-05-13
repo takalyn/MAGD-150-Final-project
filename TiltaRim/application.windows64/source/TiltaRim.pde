@@ -26,6 +26,7 @@ void draw(){
   if(!gameRunning){
       main.display();
       gameRunning = newGame.input();
+      endGame = false;
   }else if(gameRunning){
       background(0,255,255);
       pushStyle();
@@ -38,6 +39,8 @@ void draw(){
         textAlign(RIGHT, TOP);
         fill(255);
         textFont(fontScore);
+        if(time<10)
+          fill(255,0,0);
         text("Time: " + time, 1280,0);
         popStyle();
       if(!mousePressed && !shot && !endGame)
@@ -48,16 +51,13 @@ void draw(){
         ball.drawLine();
       }
       if(ball.y > 720){
-        shot=false;
         ball.unShoot();
       }
       if(ball.x > 1200 && ball.x < 1264 && ball.y> hoop.y-48 && ball.y < hoop.y+48 && ball.yv > 0){
         score++;
         hoop.newPos();
-        shot=false;
         ball.unShoot();
       }else if(ball.x>1280){
-        shot=false;
         ball.unShoot();
       }
       if(frameCount%60==0 && !endGame)
@@ -74,18 +74,16 @@ void mousePressed(){
   if(shot && !endGame){
       ball.x = mouseX;
       ball.y = mouseY;
-      shot = false;
       ball.unShoot();
+      shot = false;
     }
 }
 void mouseReleased(){
   if(!endGame){
-   if(!shot){
+   if(!shot && time<30){
      ball.shadow();
      ball.shoot();
-     shot = true;
    }else if(shot){
-     shot = false;
      ball.unShoot();
    }
   }

@@ -8,6 +8,7 @@ public class Basketball{
     x=36;
     y=360;
     xv = yv = 0;
+    sx= sy = -100;
   }
   void display(boolean shot){
     x+=xv;
@@ -28,11 +29,13 @@ public class Basketball{
     y = max(mouseY,360); 
   }
   void shoot(){
+    shot = true;
      yv=(int)((y-mouseY)/5);
      xv=(int)((x-mouseX)/5);
   }
   void unShoot(){
-    xv=yv=0; 
+    xv=yv=0;
+    shot = false;
   }
   void drawLine(){
     pushStyle();

@@ -27,10 +27,13 @@ public class Button{
   }
   boolean input(){
     if(mousePressed && mouseX>xs && mouseX<xe && mouseY>ys && mouseY<ye){
-        if(message=="Quit"){
+        if(message=="Quit" && !endGame){
           exit();
           return false;
         }else if(message=="New Game"){
+          endGame = false;
+          return true;
+        }else if(message=="Main Menu"){
           return true;
         }else{return false;}
     }else{return false;}
@@ -83,16 +86,19 @@ public class EndGame{
     text("Score: " + score, 640, 256);
     if(score <= Integer.parseInt(lines[0])){
       textFont(scoref);
-      text("High Score: " + score, 640, 320);
+      text("High Score: " + Integer.parseInt(lines[0]), 640, 320);
     }else{
       textFont(scoref);
       text("New High Score!", 640, 320);
     }
-    
-    lines[0] = Integer.toString(score);//THESE TWO LINES WHEN RETURNING TO MAIN MENU
-    saveStrings("data/topScores.txt",lines);
-      
     mainMenu.display();
-    mainMenu.input();
+    if(mainMenu.input()){
+      gameRunning = false;
+      lines[0] = Integer.toString(score);
+      saveStrings("data/topScores.txt",lines);
+      time = 30;
+      score = 0;
+      ball.sx = ball.sy = ball.smx = ball.smy = -100;
+    }
   }
 };
